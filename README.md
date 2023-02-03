@@ -12,7 +12,7 @@ Here is a basic checklist for setting up a production-ready Express.js applicati
 
 - [ ] **Database**: A database is necessary to store application data. Some popular options are MongoDB, **PostgreSQL**, and MySQL.
 
-- [ ] **ORM** (Object-Relational Mapping) library: An ORM library can simplify database operations. Some popular options are Mongoose for MongoDB and Sequelize for SQL databases. I will be using Prisma for it's [Typescript support](https://www.prisma.io/docs/concepts/more/comparisons/prisma-and-typeorm#type-safety)
+- [ ] **ORM** (Object-Relational Mapping) library: An ORM library can simplify database operations. Some popular options are Mongoose for MongoDB and Sequelize for SQL databases. I'll be using Prisma for it's [Typescript support](https://www.prisma.io/docs/concepts/more/comparisons/prisma-and-typeorm#type-safety).. Also looks like it has a buncha cool feeeeeaaaaatttttuuuuuuuurrrrrreeeesssssssssss. yay
 
 - [ ] **Template engine**: A template engine is used to render dynamic HTML pages. Some popular options are Pug, Handlebars, and EJS.
 

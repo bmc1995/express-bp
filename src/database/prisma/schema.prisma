@@ -20,6 +20,7 @@ model User {
   blob           Bytes?
   writtenPosts   Post[]          @relation("WrittenPosts")
   favoritePosts  Post[]          @relation("FavoritePosts")
+  deleted        Boolean         @default(false)
   userPreference UserPreference?
 
   @@index([email])

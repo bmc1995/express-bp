@@ -1,23 +1,68 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../database/client";
-
-export async function find(args: Prisma.UserFindUniqueArgs) {
-  const user = await prisma.user.findUnique(args);
-  return user;
-}
-export async function findAll(args: Prisma.UserFindManyArgs) {
-  const user = await prisma.user.findMany(args);
-  return user;
-}
-export async function create(args: Prisma.UserCreateArgs) {
-  const user = await prisma.user.create(args);
-  return user;
-}
-export async function update(args: Prisma.UserUpdateArgs) {
-  const user = await prisma.user.update(args);
-  return user;
-}
-export async function destroy(args: Prisma.UserDeleteArgs) {
-  const user = await prisma.user.delete(args);
-  return user;
+import { Prisma, PrismaClient } from "@prisma/client";
+import prismaClient from "../database/client";
+import UserRepository from "../database/repositories/UserRepository";
+export default class UserService {
+  constructor(
+    private repo: UserRepository = new UserRepository(prismaClient)
+  ) {}
+  async findById(id: string) {
+    const user = await this.repo.find({
+      where: { id },
+      include: {
+        writtenPosts: true,
+        favoritePosts: true,
+        userPreference: true,
+        _count: true,
+      },
+    });
+    return user;
+  }
+  async getAllUsers() {
+    const user = await this.repo.findAll({
+      include: {
+        writtenPosts: true,
+        favoritePosts: true,
+        userPreference: true,
+        _count: true,
+      },
+    });
+    return user;
+  }
+  async create(args: Prisma.UserCreateArgs) {
+    const { age, email, name, title, blob, deleted, favoritePosts, role } =
+      args.data;
+    const user = await this.repo.create({
+      data: {
+        age,
+        email,
+        name,
+        title,
+        blob,
+        deleted,
+        favoritePosts,
+        role,
+        userPreference: { create: { emailUpdates: false } },
+      },
+    });
+    return user;
+  }
+  async updateById(id: string, data: Prisma.UserUpdateInput) {
+    const user = await this.repo.update({
+      where: { id },
+      data,
+      include: {
+        userPreference: true,
+        favoritePosts: true,
+        writtenPosts: true,
+      },
+    });
+    return user;
+  }
+  async destroy(id: string) {
+    const user = await this.repo.destroy({
+      where: { id },
+      include: { userPreference: true },
+    });
+    return user;
+  }
 }

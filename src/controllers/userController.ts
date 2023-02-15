@@ -1,13 +1,18 @@
+import { User } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import UserService from "../services/userService";
-const userService = new UserService();
 
 //TODO create validation middleware / DTO defs
 export default class UserController {
-  constructor(private userService: UserService = userService) {}
+  private static userService: UserService;
+
+  constructor(private injectedService: UserService = new UserService()) {
+    UserController.userService = this.injectedService;
+  }
+
   static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const foundUsers = await userService.getAllUsers();
+      const foundUsers = await this.userService.getAllUsers();
       res.json({ foundUsers });
       return next();
     } catch (error) {
@@ -17,7 +22,7 @@ export default class UserController {
   static async find(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const foundUser = await userService.findById(id);
+      const foundUser = await this.userService.findById(id);
       res.json({ foundUser });
       return next();
     } catch (error) {
@@ -28,7 +33,7 @@ export default class UserController {
     try {
       console.log(req.body);
 
-      const createdUser = await userService.create({
+      const createdUser = await this.userService.create({
         data: {
           userPreference: { create: { emailUpdates: false } },
           ...req.body,
@@ -44,7 +49,7 @@ export default class UserController {
     try {
       const { data } = req.body;
       const { id } = req.params;
-      const foundUsers = await userService.updateById(id, data);
+      const foundUsers = await this.userService.updateById(id, data);
       res.json({ foundUsers });
       return next();
     } catch (error) {
@@ -54,7 +59,9 @@ export default class UserController {
   static async softDelete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const foundUsers = await userService.updateById(id, { deleted: true });
+      const foundUsers = await this.userService.updateById(id, {
+        deleted: true,
+      });
       res.json({ foundUsers });
       return next();
     } catch (error) {
@@ -65,7 +72,7 @@ export default class UserController {
   static async destroy(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const foundUsers = await userService.destroy(id);
+      const foundUsers = await this.userService.destroy(id);
       res.json({ foundUsers });
       return next();
     } catch (error) {

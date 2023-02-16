@@ -1,11 +1,22 @@
 import { Router } from "express";
 import PostController from "../controllers/postController";
 const postRouter = Router();
+const postController = new PostController();
 
-postRouter.get("/", PostController.findAll);
-postRouter.post("/", PostController.create);
-postRouter.get("/:id", PostController.find);
-postRouter.patch("/:id", PostController.update);
-postRouter.patch("/delete/:id", PostController.softDelete);
+postRouter.get("/", (...args) => {
+  postController.findAll(...args);
+});
+postRouter.post("/", (...args) => {
+  postController.create(...args);
+});
+postRouter.get("/:id", (...args) => {
+  postController.find(...args);
+});
+postRouter.patch("/:id", (...args) => {
+  postController.update(...args);
+});
+postRouter.delete("/delete/:id", (...args) =>
+  postController.softDelete(...args)
+);
 
 export default postRouter;

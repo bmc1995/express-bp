@@ -2,9 +2,9 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import prismaClient from "../database/client";
 import UserRepository from "../database/repositories/UserRepository";
 export default class UserService {
-  constructor(
-    private repo: UserRepository = new UserRepository(prismaClient)
-  ) {}
+  constructor(private repo: UserRepository = new UserRepository()) {
+    console.log("hi");
+  }
   async findById(id: string) {
     const user = await this.repo.find({
       where: { id },

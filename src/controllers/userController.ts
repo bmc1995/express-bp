@@ -4,13 +4,9 @@ import UserService from "../services/userService";
 
 //TODO create validation middleware / DTO defs
 export default class UserController {
-  private static userService: UserService;
+  constructor(private userService: UserService = new UserService()) {}
 
-  constructor(private injectedService: UserService = new UserService()) {
-    UserController.userService = this.injectedService;
-  }
-
-  static async findAll(req: Request, res: Response, next: NextFunction) {
+  async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const foundUsers = await this.userService.getAllUsers();
       res.json({ foundUsers });
@@ -19,7 +15,7 @@ export default class UserController {
       return next(error);
     }
   }
-  static async find(req: Request, res: Response, next: NextFunction) {
+  async find(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const foundUser = await this.userService.findById(id);
@@ -29,7 +25,7 @@ export default class UserController {
       return next(error);
     }
   }
-  static async create(req: Request, res: Response, next: NextFunction) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       console.log(req.body);
 
@@ -45,7 +41,7 @@ export default class UserController {
       return next(error);
     }
   }
-  static async update(req: Request, res: Response, next: NextFunction) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { data } = req.body;
       const { id } = req.params;
@@ -56,7 +52,7 @@ export default class UserController {
       return next(error);
     }
   }
-  static async softDelete(req: Request, res: Response, next: NextFunction) {
+  async softDelete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const foundUsers = await this.userService.updateById(id, {
@@ -69,7 +65,7 @@ export default class UserController {
     }
   }
 
-  static async destroy(req: Request, res: Response, next: NextFunction) {
+  async destroy(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const foundUsers = await this.userService.destroy(id);

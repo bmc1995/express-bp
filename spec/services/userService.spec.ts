@@ -1,6 +1,6 @@
 import sinon from "sinon";
 import { faker } from "@faker-js/faker";
-import chai, { expect } from "chai";
+import { expect } from "chai";
 import UserRepository from "../../src/database/repositories/UserRepository";
 import UserService from "../../src/services/userService";
 import { User } from "@prisma/client";
@@ -9,22 +9,20 @@ import { suiteTeardown } from "mocha";
 const uuid = faker.datatype.uuid();
 const fakeUser: User = {
   age: faker.datatype.number({ max: 100 }),
-  deleted: true,
+  deleted: false,
   email: faker.internet.email(),
   id: uuid,
   name: faker.name.fullName(),
   title: faker.name.jobTitle(),
-  blob: null,
   role: "BASIC",
 };
 const fakeUser2: User = {
   age: faker.datatype.number({ max: 100 }),
-  deleted: true,
+  deleted: false,
   email: faker.internet.email(),
   id: uuid,
   name: faker.name.fullName(),
   title: faker.name.jobTitle(),
-  blob: null,
   role: "BASIC",
 };
 
@@ -79,5 +77,13 @@ describe("UserService", () => {
     });
 
     expect(returned).to.eql(fakeUser);
+  });
+  it("#softDelete returns soft deleted user", async () => {
+    const deletedUser: User = { ...fakeUser, deleted: true };
+    stubRepo.update.resolves(deletedUser);
+
+    const returned = await service.softDelete(fakeUser.id);
+
+    expect(returned).to.eql(deletedUser);
   });
 });

@@ -29,15 +29,13 @@ export default class UserService {
     return user;
   }
   async create(args: Prisma.UserCreateArgs) {
-    const { age, email, name, title, blob, deleted, favoritePosts, role } =
-      args.data;
+    const { age, email, name, title, deleted, favoritePosts, role } = args.data;
     const user = await this.repo.create({
       data: {
         age,
         email,
         name,
         title,
-        blob,
         deleted,
         favoritePosts,
         role,
@@ -61,6 +59,14 @@ export default class UserService {
   async destroy(id: string) {
     const user = await this.repo.destroy({
       where: { id },
+      include: { userPreference: true },
+    });
+    return user;
+  }
+  async softDelete(id: string) {
+    const user = await this.repo.update({
+      where: { id },
+      data: { deleted: true },
       include: { userPreference: true },
     });
     return user;
